@@ -6,6 +6,9 @@
         "framework",
         "laravel"
     ],
+    "bin": [
+        "artisan"
+    ],
     "license": "MIT",
     "require": {
         "php": "^7.3|^8.0",
