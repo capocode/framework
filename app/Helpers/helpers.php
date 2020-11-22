@@ -1,6 +1,12 @@
 <?php
 
-function site_path()
+function site_path(?string $path = null)
 {
-    return getcwd();
+    $fullpath = getcwd();
+
+    if ($path) {
+        $fullpath .= '/' . $path;
+    }
+
+    return $fullpath;
 }
