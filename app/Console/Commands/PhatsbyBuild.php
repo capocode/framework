@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Services\Phatsby\Router;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\File;
 
 class PhatsbyBuild extends Command
 {
@@ -46,6 +47,12 @@ class PhatsbyBuild extends Command
 
         foreach ($routes as $route) {
             $route->save();
+        }
+
+        $staticDirectory = site_path('static');
+
+        if (File::exists($staticDirectory)) {
+            File::copyDirectory($staticDirectory, site_path('public'));
         }
 
         return 0;
