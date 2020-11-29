@@ -15,5 +15,7 @@ class CatchAll extends Controller
         if (view()->exists($pagesPath)) {
             return view($pagesPath);
         }
+
+        return abort(404);
     }
 }
