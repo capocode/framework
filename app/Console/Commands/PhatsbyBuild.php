@@ -51,9 +51,12 @@ class PhatsbyBuild extends Command
 
         $staticDirectory = site_path('static');
 
+        // Copy static folder to build output
         if (File::exists($staticDirectory)) {
             File::copyDirectory($staticDirectory, site_path('public'));
         }
+
+        system('npm run prod');
 
         return 0;
     }
