@@ -2,6 +2,7 @@
 
 namespace App\Services\Phatsby;
 
+use App\Services\Phatsby\Console\Commands\PhatsbyBuild;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\File;
@@ -13,6 +14,10 @@ class PhatsbyServiceProvider extends ServiceProvider
         $this->app->bind('path.public', function () {
             return site_path('public');
         });
+
+        $this->commands([
+            PhatsbyBuild::class,
+        ]);
 
         // $this->loadViewsFrom($dir . '/src', 'site');
 
