@@ -12,6 +12,10 @@ class PhatsbyServiceProvider extends ServiceProvider
     {
         $dir = getcwd();
 
+        $this->app->bind('path.public', function () use ($dir) {
+            return site_path('public');
+        });
+
         // $this->loadViewsFrom($dir . '/src', 'site');
 
         Route::middleware('web')
