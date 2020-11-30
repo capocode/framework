@@ -13,7 +13,7 @@ class PhatsbyBuild extends Command
      *
      * @var string
      */
-    protected $signature = 'phatsby:build';
+    protected $signature = 'build';
 
     /**
      * The console command description.
