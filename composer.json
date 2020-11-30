@@ -1,14 +1,14 @@
 {
     "name": "antlur/phatsby",
     "type": "library",
-    "description": "The Laravel Framework. In a package",
+    "description": "The Laravel Framework. In a package. For websites.",
     "keywords": [
         "framework",
         "laravel"
     ],
     "bin": [
         "artisan",
-        "app/Services/Phatsby/phatsby"
+        "app/Services/Phatsby/Console/phatsby"
     ],
     "license": "MIT",
     "require": {
