@@ -20,7 +20,7 @@ class PhatsbyBuild extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Build the website to static site';
 
     /**
      * Create a new command instance.
