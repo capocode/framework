@@ -10,9 +10,7 @@ class PhatsbyServiceProvider extends ServiceProvider
 {
     public function boot()
     {
-        $dir = getcwd();
-
-        $this->app->bind('path.public', function () use ($dir) {
+        $this->app->bind('path.public', function () {
             return site_path('public');
         });
 
