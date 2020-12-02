@@ -22,6 +22,8 @@ require getcwd().'/vendor/autoload.php';
 
 $app = require_once __DIR__.'/../../../../bootstrap/app.php';
 
+$app->useEnvironmentPath(site_path());
+
 /*
 |--------------------------------------------------------------------------
 | Run The Artisan Application
