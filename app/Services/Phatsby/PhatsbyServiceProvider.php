@@ -11,6 +11,11 @@ class PhatsbyServiceProvider extends ServiceProvider
 {
     public function boot()
     {
+        $viewPaths = config('view.paths');
+
+        config(['view.paths'  =>  [site_path('src')]]);
+
+
         $this->app->bind('path.public', function () {
             return site_path('public');
         });
@@ -18,8 +23,6 @@ class PhatsbyServiceProvider extends ServiceProvider
         $this->commands([
             PhatsbyBuild::class,
         ]);
-
-        // $this->loadViewsFrom($dir . '/src', 'site');
 
         Route::middleware('web')
             // ->namespace($this->namespace)
