@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Str;
+use App\Services\Phatsby\Data;
 
 function site_path(?string $path = null)
 {
@@ -19,4 +20,11 @@ function site_path(?string $path = null)
     }
 
     return $fullpath;
+}
+
+function data(string $key, $data = null)
+{
+    $dataService = new Data();
+
+    return $dataService->get($key);
 }
