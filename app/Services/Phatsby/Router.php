@@ -3,6 +3,7 @@
 namespace App\Services\Phatsby;
 
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Route as RouteFacade;
 
 class Router
 {
@@ -31,6 +32,20 @@ class Router
         }
 
         // dd($routes);
+
+        $routeCollection = collect(RouteFacade::getRoutes()->getRoutes());
+
+        // Filter out the fallback `{any}`
+        $routeCollection = $routeCollection->filter(fn ($r) => $r->uri() !== '{any}');
+
+        // in routes file
+        foreach ($routeCollection as $collectedRoute) {
+            $routeHtml = $collectedRoute->action['uses']()->render();
+
+            $route = new Route($collectedRoute->uri(), [], $routeHtml);
+
+            $routes[] = $route;
+        }
 
         return $routes;
     }
