@@ -24,14 +24,14 @@ class PhatsbyServiceProvider extends ServiceProvider
             PhatsbyBuild::class,
         ]);
 
-        Route::middleware('web')
-            // ->namespace($this->namespace)
-            ->group(__DIR__ . '/routes.php');
-
         if (File::exists(site_path('src/routes.php'))) {
             Route::middleware('web')
                 // ->namespace($this->namespace)
                 ->group(site_path('src/routes.php'));
         }
+
+        Route::middleware('web')
+            // ->namespace($this->namespace)
+            ->group(__DIR__ . '/routes.php');
     }
 }
