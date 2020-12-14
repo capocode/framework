@@ -41,14 +41,16 @@ class PhatsbyBuild extends Command
     {
         $this->info('Building site...');
 
-        File::deleteDirectory(site_path('out'));
+        $buildDir = env('BUILD_DIR', 'dist');
+
+        File::deleteDirectory(site_path($buildDir));
 
         // system('npm run prod');
 
         // Copy static folder to build output
-        File::copyDirectory(public_path(), site_path('out'));
+        File::copyDirectory(public_path(), site_path($buildDir));
 
-        File::delete(site_path('out/index.php'));
+        File::delete(site_path($buildDir . '/index.php'));
 
         $router = new Router();
 
@@ -58,7 +60,7 @@ class PhatsbyBuild extends Command
             $route->save();
         }
 
-        $this->info('Site built in `' . env('BUILD_DIR', 'out') . '`');
+        $this->info('Site built in `' . $buildDir . '`');
         return 0;
     }
 }

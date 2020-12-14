@@ -43,7 +43,7 @@ class Route
 
         $content = $this->render();
 
-        $filepath = site_path(env('BUILD_DIR', 'out') . '/' . $filename);
+        $filepath = site_path(env('BUILD_DIR', 'dist') . '/' . $filename);
 
         File::ensureDirectoryExists(dirname($filepath));
 
