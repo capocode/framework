@@ -17,7 +17,7 @@ class PhatsbyServiceProvider extends ServiceProvider
 
 
         $this->app->bind('path.public', function () {
-            return site_path('static');
+            return site_path('public');
         });
 
         $this->commands([
