@@ -2,6 +2,7 @@
 
 namespace Capo\Services\Phatsby;
 
+use Capo\Services\Config;
 use Capo\Services\Phatsby\Console\Commands\PhatsbyBuild;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\ServiceProvider;
@@ -23,7 +24,7 @@ class PhatsbyServiceProvider extends ServiceProvider
 
     public function register()
     {
-        $this->registerProviders();
+        $this->setupPlugins();
     }
 
     private function setupRoutes()
@@ -60,23 +61,17 @@ class PhatsbyServiceProvider extends ServiceProvider
         ]);
     }
 
-    private function registerProviders()
+    private function setupPlugins()
     {
-        $providers = $this->getSiteServiceProviders();
+        $plugins = Config::getPlugins();
 
-        foreach ($providers as $provider) {
-            App::register($provider);
+        if (!$plugins) {
+            return;
+        }
+
+        foreach ($plugins as $plugin) {
+            App::register($plugin->serviceProvider);
         }
     }
 
-    private function getSiteServiceProviders()
-    {
-        if (!file_exists(site_path('capo-config.php'))) {
-            return [];
-        }
-
-        $config = include(site_path('capo-config.php'));
-
-        return $config['providers'] ?? [];
-    }
 }
