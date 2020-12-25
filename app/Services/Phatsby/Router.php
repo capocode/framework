@@ -40,7 +40,11 @@ class Router
 
         // in routes file
         foreach ($routeCollection as $collectedRoute) {
-            $routeHtml = $collectedRoute->action['uses']()->render();
+            $routeHtml = '';
+
+            // if (isset($collectedRoute->action['controller']) && $collectedRoute->action['controller'] === null) {
+                $routeHtml = $collectedRoute->action['uses']()->render();
+            // }
 
             $route = new Route($collectedRoute->uri(), [], $routeHtml);
 
