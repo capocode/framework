@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Phatsby;
+namespace Capo\Services\Phatsby;
 
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route as RouteFacade;

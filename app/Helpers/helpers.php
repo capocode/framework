@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Str;
-use App\Services\Phatsby\Data;
+use Capo\Services\Phatsby\Data;
 use Illuminate\Support\Facades\File;
 
 function site_path(?string $path = null)

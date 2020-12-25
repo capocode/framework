@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Services\Phatsby;
+namespace Capo\Services\Phatsby;
 
-use App\Services\Phatsby\Console\Commands\PhatsbyBuild;
+use Capo\Services\Phatsby\Console\Commands\PhatsbyBuild;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;

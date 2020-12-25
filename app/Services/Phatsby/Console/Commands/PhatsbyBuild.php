@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Services\Phatsby\Console\Commands;
+namespace Capo\Services\Phatsby\Console\Commands;
 
-use App\Services\Phatsby\Router;
+use Capo\Services\Phatsby\Router;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 

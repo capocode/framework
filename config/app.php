@@ -169,13 +169,13 @@ return [
         /*
          * Application Service Providers...
          */
-        App\Providers\AppServiceProvider::class,
-        App\Providers\AuthServiceProvider::class,
-        // App\Providers\BroadcastServiceProvider::class,
-        App\Providers\EventServiceProvider::class,
-        App\Providers\RouteServiceProvider::class,
+        Capo\Providers\AppServiceProvider::class,
+        Capo\Providers\AuthServiceProvider::class,
+        // Capo\Providers\BroadcastServiceProvider::class,
+        Capo\Providers\EventServiceProvider::class,
+        Capo\Providers\RouteServiceProvider::class,
 
-        App\Services\Phatsby\PhatsbyServiceProvider::class,
+        Capo\Services\Phatsby\PhatsbyServiceProvider::class,
 
     ],
 

@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Services\Phatsby\Controllers;
+namespace Capo\Services\Phatsby\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use Capo\Http\Controllers\Controller;
 
 class CatchAll extends Controller
 {
