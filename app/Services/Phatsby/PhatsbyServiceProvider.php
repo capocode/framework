@@ -24,6 +24,8 @@ class PhatsbyServiceProvider extends ServiceProvider
 
     public function register()
     {
+        $this->setupSiteCache();
+
         $this->setupPlugins();
     }
 
@@ -72,6 +74,11 @@ class PhatsbyServiceProvider extends ServiceProvider
         foreach ($plugins as $plugin) {
             App::register($plugin->serviceProvider);
         }
+    }
+
+    private function setupSiteCache()
+    {
+        File::ensureDirectoryExists(site_cache_path());
     }
 
 }

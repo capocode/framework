@@ -23,6 +23,11 @@ function site_path(?string $path = null)
     return $fullpath;
 }
 
+function site_cache_path()
+{
+    return site_path(env('CACHE_DIR', '.cache'));
+}
+
 function data(string $key, $data = null)
 {
     $dataService = new Data();
