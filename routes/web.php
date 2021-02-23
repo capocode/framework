@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Capo\Http\Controllers\CatchAll;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,3 +14,4 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::any('/{any}', [CatchAll::class, 'index'])->where('any', '.*');
