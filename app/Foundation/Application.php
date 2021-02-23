@@ -27,10 +27,11 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Illuminate\Foundation\EnvironmentDetector;
 use Illuminate\Foundation\AliasLoader;
+use Illuminate\Foundation\Application as FoundationApplication;
 use Illuminate\Foundation\PackageManifest;
 use Illuminate\Foundation\ProviderRepository;
 
-class Application extends Container implements ApplicationContract, CachesConfiguration, CachesRoutes, HttpKernelInterface
+class Application extends FoundationApplication implements ApplicationContract, CachesConfiguration, CachesRoutes, HttpKernelInterface
 {
     /**
      * The Laravel framework version.
