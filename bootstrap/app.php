@@ -10,10 +10,7 @@
 | the IoC container for the system binding all of the various parts.
 |
 */
-
-$app = new \Capo\Services\Application(
-    $_ENV['APP_BASE_PATH'] ?? dirname(__DIR__)
-);
+$app = new \Capo\Services\Application(dirname(__DIR__), site_path());
 
 /*
 |--------------------------------------------------------------------------
