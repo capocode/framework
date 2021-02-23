@@ -13,13 +13,7 @@ class PhatsbyServiceProvider extends ServiceProvider
 {
     public function boot()
     {
-        $this->setupViews();
-
-        $this->setupPaths();
-
         $this->setupCommands();
-
-        $this->setupRoutes();
     }
 
     public function register()
@@ -27,33 +21,6 @@ class PhatsbyServiceProvider extends ServiceProvider
         $this->setupSiteCache();
 
         $this->setupPlugins();
-    }
-
-    private function setupRoutes()
-    {
-        if (File::exists(site_path('src/routes.php'))) {
-            Route::middleware('web')
-                // ->namespace($this->namespace)
-                ->group(site_path('src/routes.php'));
-        }
-
-        Route::middleware('web')
-            // ->namespace($this->namespace)
-            ->group(__DIR__ . '/routes.php');
-    }
-
-    private function setupPaths()
-    {
-        $this->app->bind('path.public', function () {
-            return site_path('public');
-        });
-    }
-
-    private function setupViews()
-    {
-        $viewPaths = config('view.paths');
-
-        config(['view.paths'  =>  [site_path('src')]]);
     }
 
     private function setupCommands()
