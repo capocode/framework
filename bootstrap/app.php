@@ -11,7 +11,7 @@
 |
 */
 
-$app = new Illuminate\Foundation\Application(
+$app = new \Capo\Services\Application(
     $_ENV['APP_BASE_PATH'] ?? dirname(__DIR__)
 );
 
