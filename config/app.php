@@ -170,8 +170,6 @@ return [
          * Application Service Providers...
          */
         Capo\Providers\AppServiceProvider::class,
-        Capo\Providers\AuthServiceProvider::class,
-        // Capo\Providers\BroadcastServiceProvider::class,
         Capo\Providers\EventServiceProvider::class,
         Capo\Providers\RouteServiceProvider::class,
 
