@@ -1,6 +1,6 @@
 <?php
 
-namespace Capo\Services;
+namespace Capo\Foundation;
 
 use Closure;
 use Illuminate\Container\Container;
@@ -107,6 +107,13 @@ class Application extends Container implements ApplicationContract, CachesConfig
      *
      * @var string
      */
+    protected $sitePath;
+
+    /**
+     * The custom application path defined by the developer.
+     *
+     * @var string
+     */
     protected $appPath;
 
     /**
@@ -164,11 +171,10 @@ class Application extends Container implements ApplicationContract, CachesConfig
      * @param  string|null  $basePath
      * @return void
      */
-    public function __construct($basePath = null)
+    public function __construct($basePath, $sitePath)
     {
-        if ($basePath) {
-            $this->setBasePath($basePath);
-        }
+        $this->setSitePath($sitePath);
+        $this->setBasePath($basePath);
 
         $this->registerBaseBindings();
         $this->registerBaseServiceProviders();
@@ -299,6 +305,13 @@ class Application extends Container implements ApplicationContract, CachesConfig
         return $this;
     }
 
+    public function setSitePath($sitePath)
+    {
+        $this->sitePath = rtrim($sitePath, '\/');
+
+        return $this;
+    }
+
     /**
      * Bind all of the application paths in the container.
      *
@@ -421,7 +434,7 @@ class Application extends Container implements ApplicationContract, CachesConfig
      */
     public function publicPath()
     {
-        return $this->basePath.DIRECTORY_SEPARATOR.'public';
+        return $this->sitePath.DIRECTORY_SEPARATOR.'public';
     }
 
     /**
@@ -431,7 +444,7 @@ class Application extends Container implements ApplicationContract, CachesConfig
      */
     public function storagePath()
     {
-        return $this->storagePath ?: $this->basePath.DIRECTORY_SEPARATOR.'storage';
+        return $this->storagePath ?: $this->sitePath.DIRECTORY_SEPARATOR.'storage';
     }
 
     /**
@@ -457,7 +470,7 @@ class Application extends Container implements ApplicationContract, CachesConfig
      */
     public function resourcePath($path = '')
     {
-        return $this->basePath.DIRECTORY_SEPARATOR.'resources'.($path ? DIRECTORY_SEPARATOR.$path : $path);
+        return $this->sitePath.DIRECTORY_SEPARATOR.'resources'.($path ? DIRECTORY_SEPARATOR.$path : $path);
     }
 
     /**
@@ -467,7 +480,7 @@ class Application extends Container implements ApplicationContract, CachesConfig
      */
     public function environmentPath()
     {
-        return $this->environmentPath ?: $this->basePath;
+        return $this->environmentPath ?: $this->sitePath;
     }
 
     /**
