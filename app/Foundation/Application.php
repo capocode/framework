@@ -38,7 +38,7 @@ class Application extends FoundationApplication implements ApplicationContract, 
      *
      * @var string
      */
-    const VERSION = '8.15.0';
+    const VERSION = '8.78.1';
 
     /**
      * The base path for the Laravel installation.
