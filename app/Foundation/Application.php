@@ -922,7 +922,7 @@ class Application extends FoundationApplication implements ApplicationContract, 
      * @param  callable[]  $callbacks
      * @return void
      */
-    protected function fireAppCallbacks(array $callbacks)
+    protected function fireAppCallbacks(array &$callbacks)
     {
         foreach ($callbacks as $callback) {
             $callback($this);
