@@ -45,7 +45,8 @@ class PhatsbyServiceProvider extends ServiceProvider
 
     private function setupSiteCache()
     {
-        File::ensureDirectoryExists(site_cache_path());
+        // Use storage dir instead?
+        // File::ensureDirectoryExists(site_cache_path());
     }
 
 }
