@@ -1,6 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Capo\Services\Phatsby\Controllers\CatchAll;
+use Capo\Services\Capo\Controllers\CatchAll;
 
 Route::any('/{any}', [CatchAll::class, 'index'])->where('any', '.*');

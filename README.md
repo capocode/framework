@@ -1,6 +1,6 @@
-# Phatsby
+# Capo
 
-Phatsby is a static site generator that utilizes Laravel because it's awesome. Phatsby is heavily inspired by Gatsby and Next
+Capo is a website framework built upon Laravel and inspired by the simplicity of Next.js
 
 ## Getting Started
 

@@ -8,7 +8,7 @@
     ],
     "bin": [
         "artisan",
-        "app/Services/Phatsby/Console/phatsby"
+        "app/Services/Capo/Console/capo"
     ],
     "license": "MIT",
     "require": {

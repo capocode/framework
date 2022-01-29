@@ -173,7 +173,7 @@ return [
         Capo\Providers\EventServiceProvider::class,
         Capo\Providers\RouteServiceProvider::class,
 
-        Capo\Services\Phatsby\PhatsbyServiceProvider::class,
+        Capo\Services\Capo\CapoServiceProvider::class,
 
     ],
 

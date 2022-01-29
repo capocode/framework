@@ -1,12 +1,12 @@
 <?php
 
-namespace Capo\Services\Phatsby\Console\Commands;
+namespace Capo\Services\Capo\Console\Commands;
 
-use Capo\Services\Phatsby\Router;
+use Capo\Services\Capo\Router;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 
-class PhatsbyBuild extends Command
+class CapoBuild extends Command
 {
     /**
      * The name and signature of the console command.
