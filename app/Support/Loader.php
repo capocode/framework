@@ -13,7 +13,7 @@ class Loader
 
 
     /**
-     * @return Collection<Location>
+     * @return Collection
      */
     public function collection()
     {
