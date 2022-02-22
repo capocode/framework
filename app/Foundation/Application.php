@@ -448,7 +448,7 @@ class Application extends FoundationApplication implements ApplicationContract, 
      */
     public function storagePath($path = '')
     {
-        return ($this->storagePath ?: $this->basePath.DIRECTORY_SEPARATOR.'storage')
+        return ($this->storagePath ?: $this->sitePath.DIRECTORY_SEPARATOR.'storage')
                             .($path != '' ? DIRECTORY_SEPARATOR.$path : '');
     }
 
