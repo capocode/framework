@@ -22,150 +22,14 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use RuntimeException;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Illuminate\Foundation\EnvironmentDetector;
-use Illuminate\Foundation\AliasLoader;
 use Illuminate\Foundation\Application as FoundationApplication;
-use Illuminate\Foundation\PackageManifest;
-use Illuminate\Foundation\ProviderRepository;
 
 class Application extends FoundationApplication implements ApplicationContract, CachesConfiguration, CachesRoutes, HttpKernelInterface
 {
-    /**
-     * The Laravel framework version.
-     *
-     * @var string
-     */
-    const VERSION = '8.15.0';
-
-    /**
-     * The base path for the Laravel installation.
-     *
-     * @var string
-     */
-    protected $basePath;
-
-    /**
-     * Indicates if the application has been bootstrapped before.
-     *
-     * @var bool
-     */
-    protected $hasBeenBootstrapped = false;
-
-    /**
-     * Indicates if the application has "booted".
-     *
-     * @var bool
-     */
-    protected $booted = false;
-
-    /**
-     * The array of booting callbacks.
-     *
-     * @var callable[]
-     */
-    protected $bootingCallbacks = [];
-
-    /**
-     * The array of booted callbacks.
-     *
-     * @var callable[]
-     */
-    protected $bootedCallbacks = [];
-
-    /**
-     * The array of terminating callbacks.
-     *
-     * @var callable[]
-     */
-    protected $terminatingCallbacks = [];
-
-    /**
-     * All of the registered service providers.
-     *
-     * @var \Illuminate\Support\ServiceProvider[]
-     */
-    protected $serviceProviders = [];
-
-    /**
-     * The names of the loaded service providers.
-     *
-     * @var array
-     */
-    protected $loadedProviders = [];
-
-    /**
-     * The deferred services and their providers.
-     *
-     * @var array
-     */
-    protected $deferredServices = [];
-
-    /**
-     * The custom application path defined by the developer.
-     *
-     * @var string
-     */
-    protected $sitePath;
-
-    /**
-     * The custom application path defined by the developer.
-     *
-     * @var string
-     */
-    protected $appPath;
-
-    /**
-     * The custom database path defined by the developer.
-     *
-     * @var string
-     */
-    protected $databasePath;
-
-    /**
-     * The custom storage path defined by the developer.
-     *
-     * @var string
-     */
-    protected $storagePath;
-
-    /**
-     * The custom environment path defined by the developer.
-     *
-     * @var string
-     */
-    protected $environmentPath;
-
-    /**
-     * The environment file to load during bootstrapping.
-     *
-     * @var string
-     */
-    protected $environmentFile = '.env';
-
-    /**
-     * Indicates if the application is running in the console.
-     *
-     * @var bool|null
-     */
-    protected $isRunningInConsole;
-
-    /**
-     * The application namespace.
-     *
-     * @var string
-     */
-    protected $namespace;
-
-    /**
-     * The prefixes of absolute cache paths for use during normalization.
-     *
-     * @var string[]
-     */
-    protected $absoluteCachePathPrefixes = ['/', '\\'];
-
     /**
      * Create a new Illuminate application instance.
      *
@@ -418,14 +282,15 @@ class Application extends FoundationApplication implements ApplicationContract, 
         return $this;
     }
 
-    /**
+   /**
      * Get the path to the language files.
      *
+     * @param  string  $path
      * @return string
      */
-    public function langPath()
+    public function langPath($path = '')
     {
-        return $this->resourcePath().DIRECTORY_SEPARATOR.'lang';
+        return $this->langPath.($path != '' ? DIRECTORY_SEPARATOR.$path : '');
     }
 
     /**
@@ -441,11 +306,13 @@ class Application extends FoundationApplication implements ApplicationContract, 
     /**
      * Get the path to the storage directory.
      *
+     * @param  string  $path
      * @return string
      */
-    public function storagePath()
+    public function storagePath($path = '')
     {
-        return $this->storagePath ?: $this->sitePath.DIRECTORY_SEPARATOR.'storage';
+        return ($this->storagePath ?: $this->basePath.DIRECTORY_SEPARATOR.'storage')
+                            .($path != '' ? DIRECTORY_SEPARATOR.$path : '');
     }
 
     /**
@@ -931,8 +798,10 @@ class Application extends FoundationApplication implements ApplicationContract, 
 
     /**
      * {@inheritdoc}
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function handle(SymfonyRequest $request, int $type = self::MASTER_REQUEST, bool $catch = true)
+    public function handle(SymfonyRequest $request, int $type = self::MAIN_REQUEST, bool $catch = true): SymfonyResponse
     {
         return $this[HttpKernelContract::class]->handle(Request::createFromBase($request));
     }
