@@ -1,15 +1,15 @@
 <?php
 
-namespace Capo\Services\Phatsby;
+namespace Capo\Services\Capo;
 
 use Capo\Services\Config;
-use Capo\Services\Phatsby\Console\Commands\PhatsbyBuild;
+use Capo\Services\Capo\Console\Commands\CapoBuild;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\File;
 
-class PhatsbyServiceProvider extends ServiceProvider
+class CapoServiceProvider extends ServiceProvider
 {
     public function boot()
     {
@@ -26,7 +26,7 @@ class PhatsbyServiceProvider extends ServiceProvider
     private function setupCommands()
     {
         $this->commands([
-            PhatsbyBuild::class,
+            CapoBuild::class,
         ]);
     }
 

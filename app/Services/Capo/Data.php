@@ -1,6 +1,6 @@
 <?php
 
-namespace Capo\Services\Phatsby;
+namespace Capo\Services\Capo;
 
 use Error;
 use Illuminate\Support\Facades\File;

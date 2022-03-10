@@ -22,6 +22,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use RuntimeException;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -38,7 +39,7 @@ class Application extends FoundationApplication implements ApplicationContract, 
      *
      * @var string
      */
-    const VERSION = '8.78.1';
+    const VERSION = '9.1.0';
 
     /**
      * The base path for the Laravel installation.
@@ -421,11 +422,12 @@ class Application extends FoundationApplication implements ApplicationContract, 
     /**
      * Get the path to the language files.
      *
+     * @param  string  $path
      * @return string
      */
-    public function langPath()
+    public function langPath($path = '')
     {
-        return $this->resourcePath().DIRECTORY_SEPARATOR.'lang';
+        return $this->langPath.($path != '' ? DIRECTORY_SEPARATOR.$path : '');
     }
 
     /**
@@ -441,11 +443,13 @@ class Application extends FoundationApplication implements ApplicationContract, 
     /**
      * Get the path to the storage directory.
      *
+     * @param  string  $path
      * @return string
      */
-    public function storagePath()
+    public function storagePath($path = '')
     {
-        return $this->storagePath ?: $this->sitePath.DIRECTORY_SEPARATOR.'storage';
+        return ($this->storagePath ?: $this->sitePath.DIRECTORY_SEPARATOR.'storage')
+                            .($path != '' ? DIRECTORY_SEPARATOR.$path : '');
     }
 
     /**
@@ -935,8 +939,10 @@ class Application extends FoundationApplication implements ApplicationContract, 
 
     /**
      * {@inheritdoc}
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function handle(SymfonyRequest $request, int $type = self::MASTER_REQUEST, bool $catch = true)
+    public function handle(SymfonyRequest $request, int $type = self::MAIN_REQUEST, bool $catch = true): SymfonyResponse
     {
         return $this[HttpKernelContract::class]->handle(Request::createFromBase($request));
     }
