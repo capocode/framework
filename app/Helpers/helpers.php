@@ -4,7 +4,7 @@ use Illuminate\Support\Str;
 use Capo\Services\Capo\Data;
 use Illuminate\Support\Facades\File;
 
-function site_path(?string $path = null)
+function site_path(?string $path = "")
 {
     $fullpath = getcwd();
 
