@@ -12,6 +12,8 @@
 */
 $app = new \Capo\Foundation\Application(dirname(__DIR__), site_path());
 
+$app->useAppPath(site_path() . '/src/app');
+
 /*
 |--------------------------------------------------------------------------
 | Bind Important Interfaces
