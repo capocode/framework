@@ -372,6 +372,17 @@ class Application extends FoundationApplication implements ApplicationContract, 
     }
 
     /**
+     * Get the base path of the Laravel installation.
+     *
+     * @param  string  $path Optionally, a path to append to the base path
+     * @return string
+     */
+    public function sitePath($path = '')
+    {
+        return $this->sitePath.($path ? DIRECTORY_SEPARATOR.$path : $path);
+    }
+
+    /**
      * Get the path to the bootstrap directory.
      *
      * @param  string  $path Optionally, a path to append to the bootstrap path
@@ -1346,11 +1357,11 @@ class Application extends FoundationApplication implements ApplicationContract, 
             return $this->namespace;
         }
 
-        $composer = json_decode(file_get_contents($this->basePath('composer.json')), true);
+        $composer = json_decode(file_get_contents($this->sitePath('composer.json')), true);
 
         foreach ((array) data_get($composer, 'autoload.psr-4') as $namespace => $path) {
             foreach ((array) $path as $pathChoice) {
-                if (realpath($this->path()) === realpath($this->basePath($pathChoice))) {
+                if (realpath($this->path()) === realpath($this->sitePath($pathChoice))) {
                     return $this->namespace = $namespace;
                 }
             }
