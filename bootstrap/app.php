@@ -12,7 +12,10 @@
 */
 $app = new \Capo\Foundation\Application(dirname(__DIR__), site_path());
 
+// Customize paths
 $app->useAppPath(site_path() . '/src/app');
+$app->useStoragePath(site_path() . '/storage');
+$app->useEnvironmentPath(site_path());
 
 /*
 |--------------------------------------------------------------------------
