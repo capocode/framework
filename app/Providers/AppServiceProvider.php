@@ -13,7 +13,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        app()->register(\Inertia\ServiceProvider::class);
     }
 
     /**
