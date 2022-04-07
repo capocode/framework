@@ -11,7 +11,6 @@ use Inertia\Response as InertiaResponse;
 
 class Router
 {
-
     /**
      * Get the routes for each file to be generated
      *
@@ -19,9 +18,7 @@ class Router
      */
     public function routes(): array
     {
-        $routes = [];
-
-        array_merge($routes, $this->getRoutesFromPages());
+        $routes = $this->getRoutesFromPages();
 
         /** @var Collection<RoutingRoute> */
         $routeCollection = collect(RouteFacade::getRoutes());
@@ -75,11 +72,13 @@ class Router
     {
         $routes = [];
 
-        if (!File::exists(site_path('src/pages'))) {
+        $pagesPath = app()->resourcePath('views/pages');
+
+        if (!File::exists($pagesPath)) {
             return $routes;
         }
 
-        $themePages = File::allFiles(site_path('src/pages'));
+        $themePages = File::allFiles($pagesPath);
 
         foreach ($themePages as $page) {
             $slug = str_replace('.blade.php', '', $page->getRelativePathname());
