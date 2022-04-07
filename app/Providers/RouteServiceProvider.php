@@ -39,10 +39,10 @@ class RouteServiceProvider extends ServiceProvider
         $this->configureRateLimiting();
 
         $this->routes(function () {
-            if (File::exists(site_path('src/routes.php'))) {
+            if (File::exists(site_path('routes/web.php'))) {
                 Route::middleware('web')
                     // ->namespace($this->namespace)
-                    ->group(site_path('src/routes.php'));
+                    ->group(site_path('routes/web.php'));
             }
 
             Route::middleware('web')
