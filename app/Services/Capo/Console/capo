@@ -22,9 +22,9 @@ require getcwd().'/vendor/autoload.php';
 
 $app = require_once __DIR__.'/../../../../bootstrap/app.php';
 
+$app->useAppPath(site_path() . '/app');
+$app->useStoragePath(site_path() . '/storage');
 $app->useEnvironmentPath(site_path());
-
-$app->useAppPath(site_path() . '/src/app');
 
 /*
 |--------------------------------------------------------------------------
