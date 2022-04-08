@@ -2,12 +2,14 @@
 
 namespace Capo\Services\Capo;
 
+use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route as RouteFacade;
 use Illuminate\Routing\Route as RoutingRoute;
 use Illuminate\View\View;
 use Inertia\Response as InertiaResponse;
+use Illuminate\Support\Facades\Log;
 
 class Router
 {
@@ -42,16 +44,20 @@ class Router
         return $routes;
     }
 
-    private function getHtml(View|InertiaResponse $response)
+    private function getHtml(View|InertiaResponse|Response $response)
     {
         if ($response instanceof InertiaResponse) {
             return $response->toResponse(request())->getContent();
         }
 
+        if ($response instanceof Response) {
+            return $response->getContent();
+        }
+
         return $response->render();
     }
 
-    private function getRouteResponse(RoutingRoute $route): View|InertiaResponse
+    private function getRouteResponse(RoutingRoute $route): View|InertiaResponse|Response
     {
         $routeAction = $route->getAction();
 
@@ -62,10 +68,19 @@ class Router
         $controller = $route->getController();
         $method = $route->getActionMethod();
 
-        return $controller::class === $method
-            ? app($method)() // invoke the controller
-            : $controller->$method(); // invoke the method
+        // Invoke the controller
+        if ($controller::class === $method) {
+            return app()->call($controller::class);
+        }
 
+        try {
+            // Try invoking the controller method
+            // If it's a dynamic route without data, it will throw an exception
+            return app()->call([$controller, $method]);
+        } catch (\Exception $e) {
+            Log::error("Couldn't Render Route: {$route->uri()}");
+            return response('', 404);
+        }
     }
 
     private function getRoutesFromPages(): array
