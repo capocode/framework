@@ -90,6 +90,21 @@ class Application extends \Illuminate\Foundation\Application
     }
 
     /**
+     * Get the path to the application configuration files.
+     *
+     * @param  string  $path
+     * @return string
+     */
+    public function configPath($path = '')
+    {
+        if (file_exists($this->sitePath('config'))) {
+            return $this->sitePath.DIRECTORY_SEPARATOR.'config'.($path != '' ? DIRECTORY_SEPARATOR.$path : '');
+        }
+
+        return $this->basePath.DIRECTORY_SEPARATOR.'config'.($path != '' ? DIRECTORY_SEPARATOR.$path : '');
+    }
+
+    /**
      * Get the application namespace.
      *
      * @return string
