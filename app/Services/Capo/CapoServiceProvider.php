@@ -4,6 +4,7 @@ namespace Capo\Services\Capo;
 
 use Capo\Services\Config;
 use Capo\Services\Capo\Console\Commands\CapoBuild;
+use Capo\Services\Capo\Console\Commands\CopyConfig;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;
@@ -27,6 +28,7 @@ class CapoServiceProvider extends ServiceProvider
     {
         $this->commands([
             CapoBuild::class,
+            CopyConfig::class,
         ]);
     }
 
