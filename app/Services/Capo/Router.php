@@ -2,17 +2,28 @@
 
 namespace Capo\Services\Capo;
 
-use Illuminate\Http\Response;
+use Capo\Attributes\ExportPaths;
+use Capo\Http\Controllers\CatchAll;
+use Capo\Http\Kernel;
+use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route as RouteFacade;
 use Illuminate\Routing\Route as RoutingRoute;
-use Illuminate\View\View;
-use Inertia\Response as InertiaResponse;
-use Illuminate\Support\Facades\Log;
+use ReflectionAttribute;
+use ReflectionClass;
+use ReflectionFunction;
+use ReflectionMethod;
 
 class Router
 {
+    private Kernel $kernel;
+
+    public function __construct()
+    {
+        $this->kernel = app(Kernel::class);
+    }
+
     /**
      * Get the routes for each file to be generated
      *
@@ -20,70 +31,92 @@ class Router
      */
     public function routes(): array
     {
-        $routes = $this->getRoutesFromPages();
+        $pageUris = $this->getRouteUrisFromPages();
 
-        /** @var Collection<RoutingRoute> */
-        $routeCollection = collect(RouteFacade::getRoutes());
+        $registeredRoutes = collect(RouteFacade::getRoutes());
 
-        // Filter out the fallback `{any}` and ignition routes
-        $routeCollection = $routeCollection->filter(function (RoutingRoute $r){
-            return
-                $r->uri() !== '{any}' &&
-                $r->getPrefix() !== '_ignition';
-        });
+        $siteRegisteredRoutes = $this->removeNonAppRoutes($registeredRoutes);
+
+        $exportUrls = $this->getExportUris($siteRegisteredRoutes);
+
+        $allUris = array_merge($pageUris, $exportUrls);
+
+        $routes = [];
 
         // in routes file
-        foreach ($routeCollection as $collectedRoute) {
-            $routeResponse = $this->getRouteResponse($collectedRoute);
-
-            $html = $this->getHtml($routeResponse);
-
-            $routes[] = new Route($collectedRoute->uri(), [], $html);
+        foreach ($allUris as $url) {
+            $routes[] = $this->makeRoute($url);
         }
 
         return $routes;
     }
 
-    private function getHtml(View|InertiaResponse|Response $response)
+    private function makeRoute(string $url)
     {
-        if ($response instanceof InertiaResponse) {
-            return $response->toResponse(request())->getContent();
-        }
+        $request = Request::create($url);
+        $res = $this->kernel->handle($request);
+        $html = $res->getContent();
 
-        if ($response instanceof Response) {
-            return $response->getContent();
-        }
-
-        return $response->render();
+        return new Route($url, [], $html);
     }
 
-    private function getRouteResponse(RoutingRoute $route): View|InertiaResponse|Response
+    /**
+     * Get the routes from the pages
+     * @param Collection<RoutingRoute> $routes
+     * @return array<string>
+     */
+    private function getExportUris(Collection $routes): array
     {
-        $routeAction = $route->getAction();
+        $uris = [];
 
-        if (is_callable($routeAction['uses'])) {
-            return $routeAction['uses']();
+        foreach ($routes as $route) {
+            $routeAction = $route->getAction();
+
+            if (is_callable($routeAction['uses'])) {
+                $uris[] = $route->uri();
+                continue;
+            }
+
+            $controller = $route->getController();
+            $method = $route->getActionMethod();
+
+            $reflector = new ReflectionMethod($controller, $method);
+
+            /** @var ReflectionAttribute|null */
+            $attribute = collect($reflector->getAttributes())
+                ->first(function (ReflectionAttribute $attribute) {
+                    return $attribute->getName() === ExportPaths::class;
+                });
+
+            if (!$attribute) {
+                $uris[] = $route->uri();
+                continue;
+            }
+
+            /** @var ExportPaths */
+            $exportPathMapAttribute = $attribute->newInstance();
+            $paths = $exportPathMapAttribute->paths();
+
+            foreach ($paths as $path) {
+                $uris[] = $path;
+            }
         }
 
-        $controller = $route->getController();
-        $method = $route->getActionMethod();
-
-        // Invoke the controller
-        if ($controller::class === $method) {
-            return app()->call($controller::class);
-        }
-
-        try {
-            // Try invoking the controller method
-            // If it's a dynamic route without data, it will throw an exception
-            return app()->call([$controller, $method]);
-        } catch (\Exception $e) {
-            Log::error("Couldn't Render Route: {$route->uri()}");
-            return response('', 404);
-        }
+        return $uris;
     }
 
-    private function getRoutesFromPages(): array
+    /**
+     * Filter out the fallback `{any}` and ignition routes
+     * @return Collection<RoutingRoute>
+     */
+    private function removeNonAppRoutes(Collection $routes): Collection
+    {
+        return $routes->filter(function (RoutingRoute $r) {
+            return !$this->isVendorRoute($r);
+        });
+    }
+
+    private function getRouteUrisFromPages(): array
     {
         $routes = [];
 
@@ -100,32 +133,57 @@ class Router
 
             $slug = $slug === 'index' ? '/' : $slug;
 
-            $staticContent = $this->getStaticContent($slug);
-
-            $route = new Route($slug, [], $staticContent);
-
-            $routes[] = $route;
+            $routes[] = $slug;
         }
 
         return $routes;
     }
 
-    private function getStaticContent($slug)
+    /**
+     * Determine if the route has been defined outside of the application.
+     *
+     * @param  \Illuminate\Routing\Route  $route
+     * @return bool
+     */
+    protected function isVendorRoute(RoutingRoute $route)
     {
-        $staticContent = null;
+        if ($route->action['uses'] instanceof Closure) {
+            $path = (new ReflectionFunction($route->action['uses']))
+                                ->getFileName();
+        } elseif (
+            is_string($route->action['uses']) &&
+                  str_contains($route->action['uses'], 'SerializableClosure')
+        ) {
+            return false;
+        } elseif (is_string($route->action['uses'])) {
+            if ($this->isFrameworkController($route)) {
+                return false;
+            }
 
-        if ($slug === '/') {
-            $slug = '/index';
+            $path = (new ReflectionClass($route->getControllerClass()))
+                                ->getFileName();
+        } else {
+            return false;
         }
 
-        $themePath = 'pages/' . $slug;
-
-        try {
-            $staticContent = view($themePath)->render();
-        } catch (\Exception $e) {
-            return $staticContent;
+        if ($route->getControllerClass() === CatchAll::class) {
+            return true;
         }
 
-        return $staticContent;
+        return str_starts_with($path, site_path('vendor'));
+    }
+
+    /**
+     * Determine if the route uses a framework controller.
+     *
+     * @param  \Illuminate\Routing\Route  $route
+     * @return bool
+     */
+    protected function isFrameworkController(RoutingRoute $route)
+    {
+        return in_array($route->getControllerClass(), [
+            '\Illuminate\Routing\RedirectController',
+            '\Illuminate\Routing\ViewController',
+        ], true);
     }
 }
