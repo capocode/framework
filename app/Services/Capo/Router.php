@@ -2,7 +2,7 @@
 
 namespace Capo\Services\Capo;
 
-use Capo\Attributes\ExportPaths;
+use Capo\Services\Export\Attributes\ExportPaths;
 use Capo\Http\Controllers\CatchAll;
 use Capo\Http\Kernel;
 use Illuminate\Http\Request;
