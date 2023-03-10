@@ -7,8 +7,7 @@ use Capo\Services\Capo\Console\Commands\CapoBuild;
 use Capo\Services\Capo\Console\Commands\CopyConfig;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\File;
+use Symfony\Component\Finder\Finder;
 
 class CapoServiceProvider extends ServiceProvider
 {
@@ -20,6 +19,8 @@ class CapoServiceProvider extends ServiceProvider
     public function register()
     {
         $this->setupSiteCache();
+
+        $this->setupSiteConfig();
 
         $this->setupPlugins();
     }
@@ -42,6 +43,15 @@ class CapoServiceProvider extends ServiceProvider
 
         foreach ($plugins as $plugin) {
             App::register($plugin->serviceProvider);
+        }
+    }
+
+    private function setupSiteConfig()
+    {
+        $siteConfigPath = site_path('config');
+
+        foreach (Finder::create()->in($siteConfigPath)->name('*.php') as $file) {
+            $this->mergeConfigFrom($file->getRealPath(), basename($file->getRealPath(), '.php'));
         }
     }
 
