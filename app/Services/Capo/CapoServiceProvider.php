@@ -6,6 +6,7 @@ use Capo\Services\Config;
 use Capo\Services\Capo\Console\Commands\CapoBuild;
 use Capo\Services\Capo\Console\Commands\CopyConfig;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\ServiceProvider;
 use Symfony\Component\Finder\Finder;
 
@@ -49,6 +50,10 @@ class CapoServiceProvider extends ServiceProvider
     private function setupSiteConfig()
     {
         $siteConfigPath = site_path('config');
+
+        if (!File::exists($siteConfigPath)) {
+            return;
+        }
 
         foreach (Finder::create()->in($siteConfigPath)->name('*.php') as $file) {
             $this->mergeConfigFrom($file->getRealPath(), basename($file->getRealPath(), '.php'));
