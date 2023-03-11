@@ -69,7 +69,7 @@ class Router
     {
         $uris = [];
 
-        foreach ($routes as $route) {
+        foreach ($this->removeNonAppRoutes($routes) as $route) {
             $routeAction = $route->getAction();
 
             if (is_callable($routeAction['uses'])) {
@@ -112,7 +112,7 @@ class Router
     private function removeNonAppRoutes(Collection $routes): Collection
     {
         return $routes->filter(function (RoutingRoute $r) {
-            return !$this->isVendorRoute($r);
+            return !$this->isVendorRoute($r) && !$this->isFrameworkController($r);
         });
     }
 
