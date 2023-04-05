@@ -69,16 +69,6 @@ class Application extends \Illuminate\Foundation\Application
     }
 
     /**
-     * Get the path to the public / web directory.
-     *
-     * @return string
-     */
-    public function publicPath()
-    {
-        return $this->sitePath . DIRECTORY_SEPARATOR . 'public';
-    }
-
-    /**
      * Get the path to the resources directory.
      *
      * @param  string  $path
