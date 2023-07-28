@@ -56,7 +56,17 @@ class CapoServiceProvider extends ServiceProvider
         }
 
         foreach (Finder::create()->in($siteConfigPath)->name('*.php') as $file) {
-            $this->mergeConfigFrom($file->getRealPath(), basename($file->getRealPath(), '.php'));
+            $configNamespace = basename($file->getRealPath(), '.php');
+
+            $values = require $file->getRealPath();
+
+            if (!is_array($values)) {
+                continue;
+            }
+
+            foreach ($values as $key => $value) {
+                config([$configNamespace . '.' . $key => $value]);
+            }
         }
     }
 
@@ -65,5 +75,4 @@ class CapoServiceProvider extends ServiceProvider
         // Use storage dir instead?
         // File::ensureDirectoryExists(site_cache_path());
     }
-
 }
