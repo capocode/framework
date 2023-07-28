@@ -16,6 +16,7 @@
         "fakerphp/faker": "^1.9.1",
         "guzzlehttp/guzzle": "^7.0.1",
         "inertiajs/inertia-laravel": "^0.6.9",
+        "laravel/folio": "^1.0@beta",
         "laravel/framework": "^10.0",
         "laravel/tinker": "^2.5",
         "mockery/mockery": "^1.4.2",

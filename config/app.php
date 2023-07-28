@@ -172,6 +172,7 @@ return [
         Capo\Providers\AppServiceProvider::class,
         Capo\Providers\EventServiceProvider::class,
         Capo\Providers\RouteServiceProvider::class,
+        Capo\Providers\FolioServiceProvider::class,
 
         Capo\Services\Capo\CapoServiceProvider::class,
 
