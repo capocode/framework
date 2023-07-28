@@ -10,6 +10,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route as RouteFacade;
 use Illuminate\Routing\Route as RoutingRoute;
+use Illuminate\Support\Facades\Artisan;
 use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionFunction;
@@ -37,9 +38,11 @@ class Router
 
         $siteRegisteredRoutes = $this->removeNonAppRoutes($registeredRoutes);
 
+        $folioUrls = $this->getFolioRoutes();
+
         $exportUrls = $this->getExportUris($siteRegisteredRoutes);
 
-        $allUris = array_merge($pageUris, $exportUrls);
+        $allUris = array_merge($pageUris, $exportUrls, $folioUrls);
 
         $routes = [];
 
@@ -51,13 +54,25 @@ class Router
         return $routes;
     }
 
-    private function makeRoute(string $url)
+    private function makeRoute(string $url): Route
     {
         $request = Request::create($url);
         $res = $this->kernel->handle($request);
         $html = $res->getContent();
 
         return new Route($url, [], $html);
+    }
+
+    private function getFolioRoutes(): array
+    {
+        Artisan::call('folio:list --json');
+        $json = Artisan::output();
+
+        $routes = json_decode($json, true);
+
+        return array_map(function ($route) {
+            return $route['uri'];
+        }, $routes);
     }
 
     /**
@@ -112,7 +127,10 @@ class Router
     private function removeNonAppRoutes(Collection $routes): Collection
     {
         return $routes->filter(function (RoutingRoute $r) {
-            return !$this->isVendorRoute($r) && !$this->isFrameworkController($r);
+            return
+                !$this->isVendorRoute($r) &&
+                !$this->isFrameworkController($r) &&
+                $r->uri() !== '{fallbackPlaceholder}';
         });
     }
 
@@ -149,10 +167,10 @@ class Router
     {
         if ($route->action['uses'] instanceof Closure) {
             $path = (new ReflectionFunction($route->action['uses']))
-                                ->getFileName();
+                ->getFileName();
         } elseif (
             is_string($route->action['uses']) &&
-                  str_contains($route->action['uses'], 'SerializableClosure')
+            str_contains($route->action['uses'], 'SerializableClosure')
         ) {
             return false;
         } elseif (is_string($route->action['uses'])) {
@@ -161,7 +179,7 @@ class Router
             }
 
             $path = (new ReflectionClass($route->getControllerClass()))
-                                ->getFileName();
+                ->getFileName();
         } else {
             return false;
         }
