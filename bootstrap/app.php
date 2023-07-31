@@ -15,7 +15,7 @@ $app = new \Capo\Foundation\Application(dirname(__DIR__), site_path());
 // Customize paths
 $app->usePublicPath(site_path() . '/public');
 $app->useAppPath(site_path() . '/app');
-$app->useStoragePath(site_path() . '/storage');
+$app->useStoragePath(site_path() . '/.capo/storage');
 $app->useEnvironmentPath(site_path());
 
 /*
